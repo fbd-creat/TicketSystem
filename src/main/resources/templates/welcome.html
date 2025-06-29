@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>门票出售系统</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            padding: 0.1rem 0;
+            text-align: center;
+        }
+
+        nav {
+            background-color: #444;
+            padding: 0.5rem 0;
+            text-align: center; /* 使导航链接居中 */
+        }
+
+        .nav-links {
+            list-style: none; /* 移除列表样式 */
+            padding: 0; /* 移除内边距 */
+            margin: 0 auto; /* 自动居中 */
+        }
+
+        .nav-links li {
+            display: inline; /* 将列表项显示为行内元素 */
+            margin: 0 1rem; /* 为列表项添加外边距 */
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            white-space: nowrap; /* 防止文本换行 */
+            font-size: 20px;
+        }
+
+        .nav-links a:hover {
+            background-color: #555;
+        }
+
+        .welcome-message {
+            color: black;
+            float: right; /* 使欢迎语靠右显示 */
+            padding: 0.5rem 1rem; /* 调整内边距 */
+            text-decoration: none;
+            white-space: nowrap; /* 防止文本换行 */
+        }
+
+        .container {
+            padding: 2rem;
+        }
+
+        .ticket {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background-color: white;
+            display: flex;
+            justify-content: space-between; /* 使内容和按钮分开 */
+            align-items: center; /* 垂直居中对齐 */
+            background-image: url('static/img/laojunshan.png');
+        }
+
+        .ticket h2 {
+            margin-top: 0;
+        }
+
+        .ticket button {
+            padding: 1rem 2rem; /* 增大按钮的内边距 */
+            font-size: 1.2rem; /* 增大按钮文字大小 */
+            cursor: pointer; /* 鼠标悬停时显示指针 */
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 0.3rem 0;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+    </style>
+    <script>
+        function purchaseTicket(ticketId) {
+            location.href = "/purchaseTicket?id=" + ticketId;
+        }
+    </script>
+</head>
+<body>
+<header>
+    <h1>欢迎来到门票出售系统</h1>
+</header>
+<nav>
+    <div class="nav-links">
+        <!-- 导航链接 -->
+        <a href="/">首页</a>
+        <a href="#">门票列表</a>
+        <a th:href="@{/toLogin}">登录</a>
+        <a th:href="@{/toRegister}">注册</a>
+        <a th:href="@{/user/layout}">注销</a>
+        <li th:if="${session.loginUser != null and session.loginUser.authority ==1}" class="admin-link">
+            <a th:href="@{/manager}">后台管理</a>
+        </li>
+    </div>
+
+    <!-- 显示欢迎语的div -->
+    <div th:if="${session.loginUser != null}" class="welcome-message">
+        <span>欢迎:</span>
+        <span th:text="${session.loginUser.username}"></span>
+    </div>
+</nav>
+<div class="container">
+    <h2>精选门票</h2>
+    <div th:each="ticket:${session.tickets}">
+        <div class="ticket" th:style="'background-image: url(/'+${ticket.img}+');'">
+            <div>
+                <h2 th:text="${ticket.getEventName()}"></h2>
+                <p th:text="'日期：'+${#dates.format(ticket.getEventDate(), 'yyyy年MM月dd日')}"></p>
+                <p th:text="'地点：'+${ticket.getEventLocation()}"></p>
+                <p th:text="'价格：'+${ticket.getPrice()}+元"></p>
+                <p th:if="${ticket.getStock() > 0}" th:text="'余票：'+${ticket.getStock()}+张"></p>
+                <p th:if="${ticket.getStock() == 0}" th:text="'余票：售空'"></p>
+            </div>
+            <button th:if="${ticket.getStock() > 0}" th:attr="onclick='purchaseTicket('+${ticket.ticketId}+')'">购票
+            </button>
+            <button th:if="${ticket.getStock() == 0}" disabled="disabled">售空</button>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <p>&copy; 2024 门票出售系统. 版权所有.</p>  <a href="#">联系我们</a>
+</footer>
+</body>
+</html>

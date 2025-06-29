@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.study.mapper.OrderMapper">
+  <resultMap id="BaseResultMap" type="com.study.bean.Order">
+    <id column="order_id" jdbcType="INTEGER" property="orderId" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="ticket_id" jdbcType="INTEGER" property="ticketId" />
+    <result column="order_date" jdbcType="TIMESTAMP" property="orderDate" />
+    <result column="total_amount" jdbcType="DECIMAL" property="totalAmount" />
+    <result column="payment_status" jdbcType="VARCHAR" property="paymentStatus" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from `order`
+    where order_id = #{orderId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.study.bean.Order">
+    insert into `order` (user_id, ticket_id,
+      order_date, total_amount, payment_status
+      )
+    values (#{userId,jdbcType=INTEGER}, #{ticketId,jdbcType=INTEGER},
+      #{orderDate,jdbcType=TIMESTAMP}, #{totalAmount,jdbcType=DECIMAL}, #{paymentStatus,jdbcType=VARCHAR}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.study.bean.Order">
+    update order
+    set user_id = #{userId,jdbcType=INTEGER},
+      ticket_id = #{ticketId,jdbcType=INTEGER},
+      order_date = #{orderDate,jdbcType=TIMESTAMP},
+      total_amount = #{totalAmount,jdbcType=DECIMAL},
+      payment_status = #{paymentStatus,jdbcType=VARCHAR}
+    where order_id = #{orderId,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select order_id, user_id, ticket_id, order_date, total_amount, payment_status
+    from order
+    where order_id = #{orderId,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select order_id, user_id, ticket_id, order_date, total_amount, payment_status
+    from `order`
+  </select>
+</mapper>

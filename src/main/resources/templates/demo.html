@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .table-hover{
+            text-align: center;
+        }
+        .as .current{
+            width: 600px;
+            text-align: center;
+        }
+        ul::after{
+            content:"";
+            display:block;
+            height:0;
+            clear:both;
+            visibility:hidden;
+        }
+        ul{
+            margin-left: -35px;
+        }
+        .one{
+            margin-left: 15px;
+        }
+        ul a{
+            text-decoration: none;
+            display: inline-block;
+            width: 50px;
+            height: 30px;
+            line-height: 30px;
+            text-align: center;
+
+        }
+        ul li{
+            float: left;
+            background: #ffc0cb;
+            list-style: none;
+            margin: 10px;
+            border-radius: 10px;
+        }
+        .active{
+            background-color: orange;
+            border-radius: 10px;
+        }
+
+    </style>
+</head>
+<body>
+<div class="as">
+    <div class="as one">
+        当前第<span th:text="${pageInfo.pageNum}"></span> 页，
+        共<span th:text="${pageInfo.pages}"></span> 页，
+        <span th:text="${pageInfo.total}"></span>条记录
+    </div>
+    <ul class="as current" style="list-style: none">
+        <!--th:if="${studentPageInfo.hasPreviousPage}"}-->
+        <li th:if="${pageInfo.hasPreviousPage}"}><!--hasPreviousPage默认值为false， 如果有上一页，则不显示首页-->
+            <a th:href="|@{/page?pageNum=}|+${1}">首页</a>
+        </li>
+        <li th:if="${pageInfo.hasPreviousPage and pageInfo.prePage >0}"><!--hasPreviousPage默认值为false， 如果有上一页，则不显示-->
+            <a th:href="|@{/page?pageNum=}|+${pageInfo.prePage}">上一页</a>
+        </li>
+        <li th:each="nav:${pageInfo.navigatepageNums}"><!--navigatepageNums是一个数组：遍历所有导航页号。 -->
+            <a th:href="|@{/page?pageNum=}|+${nav}" th:text="${nav}" th:if="${nav != pageInfo.pageNum}"></a><!--如果不是当前页则可以跳转其他页面。遍历展示-->
+            <a th:class="${'active'}" th:if="${nav == pageInfo.pageNum}" th:text="${nav}"></a><!--如果是当前页则有样式。遍历 展示-->
+        </li>
+        <li th:if="${pageInfo.hasNextPage}"><!--hasNextPage默认值为false， 如果没有下一页，则不显示-->
+            <a th:href="|@{/page?pageNum=}|+${pageInfo.nextPage}">下一页</a>
+        </li>
+        <li th:if="${pageInfo.pageNum < pageInfo.pages}"><!--如果当前页小于总页数则不显示尾页 -->
+            <a th:href="|@{/page?pageNum=}|+${pageInfo.pages}">尾页</a>
+        </li>
+    </ul>
+</div>
+</body>
+</html>

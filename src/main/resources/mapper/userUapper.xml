@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.study.mapper.UserMapper">
+    <!-- 查询所有用户 -->
+    <select id="selectAllUsers" resultType="com.study.bean.User">
+        SELECT id, username, pwd, authority
+        FROM user
+    </select>
+
+    <!-- 根据ID查询用户 -->
+    <select id="selectUserById" parameterType="int" resultType="com.study.bean.User">
+        SELECT id, username, pwd, authority
+        FROM user
+        WHERE id = #{id}
+    </select>
+
+    <select id="login" parameterType="com.study.bean.User" resultType="com.study.bean.User">
+        select id, username, pwd, authority
+        from user
+        where username = #{username}
+          and pwd = md5(#{pwd})
+    </select>
+
+    <!-- 插入新用户 -->
+    <insert id="insertUser" parameterType="com.study.bean.User">
+        INSERT INTO user (username, pwd, authority)
+        VALUES (#{username}, md5(#{pwd}), #{authority})
+    </insert>
+
+    <!-- 更新用户信息 -->
+    <update id="updateUser" parameterType="com.study.bean.User">
+        UPDATE user
+        SET username = #{username}, pwd = md5(#{pwd}), authority = #{authority}
+        WHERE id = #{id}
+    </update>
+
+    <!-- 删除用户 -->
+    <delete id="deleteUserById" parameterType="int">
+        DELETE FROM user
+        WHERE id = #{id}
+    </delete>
+</mapper>

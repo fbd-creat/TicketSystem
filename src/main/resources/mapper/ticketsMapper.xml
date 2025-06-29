@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.study.mapper.TicketsMapper">
+  <resultMap id="BaseResultMap" type="com.study.bean.Tickets">
+    <id column="ticket_id" jdbcType="INTEGER" property="ticketId" />
+    <result column="event_name" jdbcType="VARCHAR" property="eventName" />
+    <result column="event_date" jdbcType="DATE" property="eventDate" />
+    <result column="event_location" jdbcType="VARCHAR" property="eventLocation" />
+    <result column="price" jdbcType="DECIMAL" property="price" />
+    <result column="stock" jdbcType="INTEGER" property="stock" />
+    <result column="img" jdbcType="VARCHAR" property="img" />
+    <result column="created_by" jdbcType="INTEGER" property="createdBy" />
+    <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+    <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from tickets
+    where ticket_id = #{ticketId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.study.bean.Tickets">
+    insert into tickets (event_name, event_date,
+      event_location, price, stock, 
+      img, created_by)
+    values (#{eventName,jdbcType=VARCHAR}, #{eventDate,jdbcType=DATE},
+      #{eventLocation,jdbcType=VARCHAR}, #{price,jdbcType=DECIMAL}, #{stock,jdbcType=INTEGER}, 
+      #{img,jdbcType=VARCHAR}, #{createdBy,jdbcType=INTEGER})
+  </insert>
+
+  <update id="updateByPrimaryKey" parameterType="com.study.bean.Tickets">
+    update tickets
+    <set>
+      <if test="eventName != null">
+        event_name = #{eventName,jdbcType=VARCHAR},
+      </if>
+      <if test="eventDate != null">
+        event_date = #{eventDate,jdbcType=DATE},
+      </if>
+      <if test="eventLocation != null">
+        event_location = #{eventLocation,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null">
+        price = #{price,jdbcType=DECIMAL},
+      </if>
+      <if test="stock != null">
+        stock = #{stock,jdbcType=INTEGER},
+      </if>
+      <if test="img != null">
+        img = #{img,jdbcType=VARCHAR},
+      </if>
+      <if test="createdBy != null">
+        created_by = #{createdBy,jdbcType=INTEGER},
+      </if>
+      <if test="createdAt != null">
+        created_at = #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedAt != null">
+        updated_at = #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where ticket_id = #{ticketId,jdbcType=INTEGER}
+  </update>
+
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select ticket_id, event_name, event_date, event_location, price, stock, img, created_by, 
+    created_at, updated_at
+    from tickets
+    where ticket_id = #{ticketId,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select ticket_id, event_name, event_date, event_location, price, stock, img, created_by, 
+    created_at, updated_at
+    from tickets
+  </select>
+</mapper>

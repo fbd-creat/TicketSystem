@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>Chat Room</title>
+    <script type="text/javascript">
+        var urlPrefix = 'ws://localhost:8080/chat/';
+        var ws = null;
+
+        // 加入
+        function join() {
+            var username = document.getElementById('uid').value;
+            var url = urlPrefix + username;
+            ws = new WebSocket(url);
+            ws.onmessage = function (event) {
+                var ta = document.getElementById('responseText');
+                ta.value += event.data + "\r\n";
+            };
+            ws.onopen = function (event) {
+                var ta = document.getElementById('responseText');
+                ta.value += "建立 websocket 连接... \r\n";
+            };
+            ws.onclose = function (event) {
+                var ta = document.getElementById('responseText');
+                ta.value += "用户[" + username + "] 已经离开聊天室! \r\n";
+                ta.value += "关闭 websocket 连接. \r\n";
+            };
+        }
+
+        // 退出
+        function exit() {
+            if (ws) {
+                ws.close();
+            }
+        }
+
+        // 发送消息
+        function send() {
+            var message = document.getElementById('message').value;
+            if (!window.WebSocket) {
+                return;
+            }
+            if (ws.readyState == WebSocket.OPEN) {
+                ws.send(message);
+            } else {
+                alert("WebSocket 连接没有建立成功！");
+            }
+        }
+    </script>
+</head>
+<body>
+<form onSubmit="return false;">
+    <h3>BBS聊天室</h3>
+    <textarea id="responseText" style="width: 1024px;height: 300px;"></textarea>
+    <br/>
+    <br/>
+    <label>昵称 : </label><input type="text" id="uid"/> &nbsp;
+    <input type="button" value="加入聊天室" onClick="join()"/> &nbsp;
+
+    <input type="button" value="离开聊天室" onClick="exit()"/>
+    <br/>
+    <br/>
+    <label>消息 : </label><input type="text" id="message"/> &nbsp; <input type="button" value="发送消息"
+                                                                          onClick="send()"/>
+</form>
+</body>
+</html>
